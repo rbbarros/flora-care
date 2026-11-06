@@ -1,53 +1,82 @@
-# 🌱 FloraCare — Gerenciador de Cuidados e Rega de Plantas
+# FloraCare — Especificação de um Gerenciador de Cuidados e Rega de Plantas
 
-![Version](https://img.shields.io/badge/version-v1.0.0-success.svg)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Status](https://img.shields.io/badge/build-passing-brightgreen.svg)
-![Workflow](https://img.shields.io/badge/workflow-Git%20Flow-orange.svg)
+![Versão](https://img.shields.io/badge/vers%C3%A3o-0.1.0-blue)
+![Fase](https://img.shields.io/badge/fase-especifica%C3%A7%C3%A3o-blue)
 
-O **FloraCare** é uma aplicação leve projetada para ajudar entusiastas de jardinagem doméstica e moradores de apartamentos a cuidarem de suas plantas. O sistema resolve o problema do esquecimento das regas ao calcular automaticamente a data da próxima hidratação com base na frequência em dias de cada espécie, destacando visualmente quais plantas estão "com sede" no dia atual.
+O **FloraCare** é a especificação de um sistema simples para organizar plantas domésticas e acompanhar quando precisam ser regadas. Este repositório está na etapa de planejamento e documentação: os requisitos e os comportamentos esperados estão descritos em `docs/`, e a pasta `src/` está reservada para o código-fonte, ainda não implementado.
 
----
+## Funcionalidades especificadas
 
-## 📂 Documentação de Planejamento e Engenharia (`docs/`)
+| Requisito | Funcionalidade | Situação |
+|---|---|---|
+| [RF01] | Cadastrar planta e seus parâmetros de cuidado | Especificado; implementação pendente |
+| [RF02] | Listar plantas com datas e status hídrico | Especificado; implementação pendente |
+| [RF03] | Editar os dados de uma planta | Especificado; implementação pendente |
+| [RF04] | Excluir planta com confirmação | Especificado; implementação pendente |
+| [RF05] | Registrar uma rega e manter seu histórico | Especificado; implementação pendente |
+| [RF06] | Calcular a próxima rega e o status | Especificado; implementação pendente |
+| [RF07] | Filtrar por status e ambiente | Especificado; implementação pendente |
+| Futuro | Calendário de adubação e poda | Planejado |
 
-Todos os artefatos de concepção e especificação formal do sistema estão disponíveis na pasta `docs/`:
+## Estrutura do repositório
 
-* 📄 **[Project Charter (Termo de Abertura)](./docs/project-charter.md)** — Visão geral, justificativa, objetivos SMART, escopo e stakeholders.
-* 📋 **[Requisitos Funcionais e Não Funcionais](./docs/requisitos.md)** — Especificação rastreável (`[RF01]` a `[RF07]` e `[RNF01]` a `[RNF05]`).
-* 🔄 **[Casos de Uso (Use Cases)](./docs/casos-de-uso.md)** — Atores e fluxos principais, alternativos e de exceção.
-* 🧩 **[Histórias de Usuário (User Stories & BDD)](./docs/user-stories.md)** — Histórias ágeis com critérios de aceite em formato Gherkin (*Dado/Quando/Então*).
+```text
+flora-care/
+├── .gitignore
+├── README.md
+├── docs/
+│   ├── project-charter.md
+│   ├── requisitos.md
+│   ├── casos-de-uso.md
+│   └── user-stories.md
+└── src/
+    └── .gitkeep
+```
 
----
+## Documentação do projeto
 
-## ✅ Sumário de Funcionalidades (Implementadas vs. Planejadas)
+- [Project Charter — Termo de Abertura](./docs/project-charter.md)
+- [Requisitos Funcionais e Não Funcionais](./docs/requisitos.md)
+- [Casos de Uso](./docs/casos-de-uso.md)
+- [Histórias de Usuário e Critérios de Aceite](./docs/user-stories.md)
 
-| ID | Funcionalidade | Status | Release |
-| :---: | :--- | :---: | :---: |
-| `[RF01]` | Cadastro de plantas (Nome, Espécie, Ambiente e Intervalo em dias) | ✅ Implementado | `v0.2.0` |
-| `[RF02]` | Listagem do jardim virtual com indicadores de status hídrico | ✅ Implementado | `v0.2.0` |
-| `[RF06]` | Cálculo automático da data da próxima rega e alerta de sede | ✅ Implementado | `v0.3.0` |
-| `[RF05]` | Registro rápido de rega ("💧 Regar") com 1 clique | ✅ Implementado | `v0.3.0` |
-| `[RF03]` | Edição de parâmetros de cuidado da planta | ✅ Implementado | `v0.3.0` |
-| `[RF04]` | Exclusão de planta com confirmação | ✅ Implementado | `v0.3.0` |
-| `[RF07]` | Filtro por status ("Precisa de Rega" / "Hidratada") e Ambiente | ✅ Implementado | `v0.3.0` |
-| `Futuro` | Controle de calendário de adubação e poda | 📅 Planejado | `v2.0.0` |
+## Organização da especificação funcional
 
----
+Os artefatos estão separados por finalidade:
 
-## 🚀 Configuração de Ambiente e Execução Local
+- [requisitos.md](./docs/requisitos.md) registra o que o sistema deve fazer e as restrições de qualidade.
+- [casos-de-uso.md](./docs/casos-de-uso.md) descreve atores e fluxos de interação, inclusive alternativas e exceções.
+- [user-stories.md](./docs/user-stories.md) expressa as necessidades do usuário e seus critérios de aceite.
 
-### Pré-requisitos
-* Git instalado
-* Navegador Web moderno (ou Node.js / Python conforme implementação em `src/`)
+As histórias e os casos de uso complementam os requisitos; não são código-fonte. A implementação correspondente será adicionada a `src/` posteriormente.
 
-### Passo a Passo
+## Execução
+
+Ainda não há uma aplicação executável. `src/` está intencionalmente sem código-fonte; `.gitkeep` existe somente para que o Git preserve a pasta no repositório.
+
+## Fluxo de branches
+
+O trabalho segue o Git Flow solicitado na atividade. Não faça commits diretamente em `main`: implemente em branches temáticas e integre por Pull Request.
+
+| Tipo de trabalho | Criar a partir de | Integrar em |
+|---|---|---|
+| Funcionalidade ou documentação (`feature/issue-<n>-descricao`) | `develop` | `develop` |
+| Correção (`bugfix/issue-<n>-descricao`) | `develop` | `develop` |
+| Preparação de versão (`release/<versao>`) | `develop` | `main` e `develop` |
+| Correção urgente (`hotfix/issue-<n>-descricao`) | `main` | `main` e `develop` |
+
+Exemplo para trabalhar em uma Issue:
+
 ```bash
-# 1. Clone este repositório
-git clone https://github.com/SEU-USUARIO/floracare.git
+git switch develop
+git pull origin develop
+git switch -c feature/issue-1-estrutura-inicial
+# Faça alterações e commits pequenos, por exemplo:
+git add .
+git commit -m "feat: adicionar estrutura inicial da aplicação"
+git push -u origin feature/issue-1-estrutura-inicial
+```
 
-# 2. Acesse o diretório do projeto
-cd floracare
+Abra um Pull Request da branch temática para `develop`, inclua `Closes #1` na descrição e use Conventional Commits (`feat:`, `fix:`, `docs:`, `refactor:`). Para marcar uma versão estável após integrá-la em `main`, use uma tag anotada seguindo SemVer, por exemplo: `git tag -a v0.1.0 -m "Primeira versão do MVP"` e `git push origin v0.1.0`.
 
-# 3. Abra a aplicação no navegador (ou execute via terminal)
-open src/index.html
+As Issues do GitHub são criadas no repositório remoto; este projeto local não cria nem simula essas Issues.
