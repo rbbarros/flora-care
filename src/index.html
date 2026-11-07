@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Organize suas plantas e acompanhe os dias de rega.">
+    <title>FloraCare — meu jardim</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./js/app.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="./"><span aria-hidden="true">🌱</span> FloraCare</a>
+      <span class="tagline">Um cuidado de cada vez.</span>
+    </header>
+
+    <main class="page">
+      <section class="intro">
+        <div>
+          <p class="eyebrow">SEU CANTINHO VERDE</p>
+          <h1>Um jardim feliz começa com cuidado.</h1>
+          <p class="muted">Acompanhe suas plantas e descubra quem está precisando de água.</p>
+        </div>
+        <button class="button primary" id="add-plant" type="button">＋ Adicionar planta</button>
+      </section>
+
+      <section class="summary" aria-label="Resumo do jardim">
+        <article class="summary-card"><span class="summary-icon">✿</span><div><p class="muted">No seu jardim</p><strong id="plant-count">0 plantas</strong></div></article>
+        <article class="summary-card"><span class="summary-icon water">☀</span><div><p class="muted">Precisam de água</p><strong id="thirsty-count">0 plantas</strong></div></article>
+      </section>
+
+      <section class="garden" aria-labelledby="garden-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">VISÃO GERAL</p><h2 id="garden-title">Minhas plantas</h2></div>
+          <div class="filters">
+            <label><span class="visually-hidden">Filtrar por status</span><select id="status-filter">
+              <option value="all">Todos os status</option><option value="thirsty">Precisam de rega</option><option value="hydrated">Hidratadas</option>
+            </select></label>
+            <label><span class="visually-hidden">Filtrar por ambiente</span><select id="environment-filter">
+              <option value="all">Todos os ambientes</option><option value="Sol Pleno">Sol pleno</option><option value="Meia-Sombra">Meia-sombra</option><option value="Sombra">Sombra</option>
+            </select></label>
+          </div>
+        </div>
+        <p id="notice" class="notice" role="status" hidden></p>
+        <div id="plant-list" class="plant-grid" aria-live="polite"></div>
+      </section>
+
+      <footer>☘ Feito com carinho para quem cultiva.</footer>
+    </main>
+
+    <dialog id="plant-dialog" aria-labelledby="dialog-title">
+      <form id="plant-form">
+        <div class="dialog-heading">
+          <div><p class="eyebrow">SEU JARDIM</p><h2 id="dialog-title">Adicionar planta</h2></div>
+          <button class="close" id="close-dialog" type="button" aria-label="Fechar">×</button>
+        </div>
+        <input id="plant-id" type="hidden">
+        <label class="field">Nome ou apelido *
+          <input id="plant-name" type="text" minlength="2" maxlength="60" placeholder="Ex.: Jiboia da sala" required>
+        </label>
+        <label class="field">Espécie <span class="optional">(opcional)</span>
+          <input id="plant-species" type="text" maxlength="80" placeholder="Ex.: Epipremnum aureum">
+        </label>
+        <div class="field-row">
+          <label class="field">Ambiente
+            <select id="plant-environment" required>
+              <option value="Sol Pleno">Sol pleno</option><option value="Meia-Sombra">Meia-sombra</option><option value="Sombra">Sombra</option>
+            </select>
+          </label>
+          <label class="field">Intervalo (dias)
+            <input id="plant-interval" type="number" min="1" step="1" value="7" required>
+          </label>
+        </div>
+        <label class="checkbox" id="needs-water-wrap"><input id="needs-water" type="checkbox"> Já precisa de rega hoje</label>
+        <div class="actions">
+          <button class="button secondary" id="cancel-dialog" type="button">Cancelar</button>
+          <button class="button primary" type="submit">Salvar planta</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>
