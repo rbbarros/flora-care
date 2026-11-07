@@ -1,9 +1,16 @@
-import { formatDate } from "./date-utils.js";
+import { formatDate, todayISO } from "./date-utils.js";
 import {
   createPlant,
+  exportGarden,
+  filterPlants,
   loadPlants,
   nextWateringDate,
+  parseGarden,
+  removePlant,
   savePlants,
+  summarizeGarden,
+  updatePlant,
+  validatePlantInput,
   waterPlant,
   wateringStatus,
 } from "./plant-service.js";
@@ -26,6 +33,9 @@ const ui = {
   thirstyCount: $("#thirsty-count"),
   statusFilter: $("#status-filter"),
   environmentFilter: $("#environment-filter"),
+  exportButton: $("#export-garden"),
+  importButton: $("#import-garden"),
+  importFile: $("#import-file"),
   notice: $("#notice"),
 };
 
@@ -37,17 +47,29 @@ function escapeHTML(value) {
   })[character]);
 }
 
+function showNotice(message) {
+  ui.notice.textContent = message;
+  ui.notice.hidden = false;
+}
+
+function setControlsEnabled(enabled) {
+  ui.add.disabled = !enabled;
+  ui.statusFilter.disabled = !enabled;
+  ui.environmentFilter.disabled = !enabled;
+  ui.exportButton.disabled = !enabled;
+}
+
 function commit(nextPlants) {
   try {
     savePlants(nextPlants);
   } catch (error) {
     console.error("Não foi possível salvar as plantas.", error);
-    ui.notice.textContent = "Não foi possível salvar. Verifique as permissões e o espaço disponível no navegador.";
-    ui.notice.hidden = false;
+    showNotice("Não foi possível salvar. Verifique as permissões e o espaço disponível no navegador.");
     return false;
   }
   plants = nextPlants;
   ui.notice.hidden = true;
+  setControlsEnabled(true);
   render();
   return true;
 }
@@ -82,16 +104,14 @@ function card(plant) {
 }
 
 function render() {
-  const thirsty = plants.filter((plant) => wateringStatus(plant) === "thirsty").length;
-  ui.count.textContent = `${plants.length} ${plants.length === 1 ? "planta" : "plantas"}`;
-  ui.thirstyCount.textContent = `${thirsty} ${thirsty === 1 ? "planta" : "plantas"}`;
+  const summary = summarizeGarden(plants);
+  ui.count.textContent = `${summary.total} ${summary.total === 1 ? "planta" : "plantas"}`;
+  ui.thirstyCount.textContent = `${summary.thirsty} ${summary.thirsty === 1 ? "planta" : "plantas"}`;
   ui.list.replaceChildren();
 
-  const visible = plants.filter((plant) => {
-    const status = wateringStatus(plant);
-    const byStatus = ui.statusFilter.value === "all" || ui.statusFilter.value === status;
-    const byEnvironment = ui.environmentFilter.value === "all" || ui.environmentFilter.value === plant.environment;
-    return byStatus && byEnvironment;
+  const visible = filterPlants(plants, {
+    status: ui.statusFilter.value,
+    environment: ui.environmentFilter.value,
   });
   if (visible.length) {
     visible.forEach((plant) => ui.list.append(card(plant)));
@@ -128,9 +148,9 @@ ui.form.addEventListener("submit", (event) => {
   event.preventDefault();
   const name = ui.name.value.trim();
   const intervalDays = Number(ui.interval.value);
-  if (name.length < 2 || !Number.isInteger(intervalDays) || intervalDays < 1) {
-    ui.notice.textContent = "Informe um nome com pelo menos 2 caracteres e um intervalo inteiro de pelo menos 1 dia.";
-    ui.notice.hidden = false;
+  const validationError = validatePlantInput({ name, intervalDays });
+  if (validationError) {
+    showNotice(validationError);
     return;
   }
 
@@ -141,10 +161,15 @@ ui.form.addEventListener("submit", (event) => {
     intervalDays,
   };
   const existingId = ui.id.value;
-  const nextPlants = existingId
-    ? plants.map((plant) => plant.id === existingId ? { ...plant, ...values } : plant)
-    : [...plants, createPlant({ ...values, needsWater: ui.needsWater.checked })];
-  if (commit(nextPlants)) ui.dialog.close();
+  try {
+    const nextPlants = existingId
+      ? plants.map((plant) => plant.id === existingId ? updatePlant(plant, values) : plant)
+      : [...plants, createPlant({ ...values, needsWater: ui.needsWater.checked })];
+    if (commit(nextPlants)) ui.dialog.close();
+  } catch (error) {
+    console.error("Não foi possível salvar a planta.", error);
+    showNotice(error.message || "Não foi possível salvar a planta.");
+  }
 });
 
 ui.list.addEventListener("click", (event) => {
@@ -157,21 +182,60 @@ ui.list.addEventListener("click", (event) => {
     openDialog(plant);
   } else if (button.dataset.action === "delete") {
     if (window.confirm(`Deseja realmente remover "${plant.name}" do seu jardim?`)) {
-      commit(plants.filter((item) => item.id !== plant.id));
+      commit(removePlant(plants, plant.id));
     }
   } else if (button.dataset.action === "water") {
     commit(plants.map((item) => item.id === plant.id ? waterPlant(item) : item));
   }
 });
 
+ui.exportButton.addEventListener("click", () => {
+  try {
+    const content = exportGarden(plants);
+    const blob = new Blob([content], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `floracare-jardim-${todayISO()}.json`;
+    document.body.append(anchor);
+    anchor.click();
+    anchor.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
+    showNotice("Jardim exportado em JSON.");
+  } catch (error) {
+    console.error("Não foi possível exportar o jardim.", error);
+    showNotice(error.message || "Não foi possível exportar o jardim.");
+  }
+});
+
+ui.importButton.addEventListener("click", () => ui.importFile.click());
+ui.importFile.addEventListener("change", async () => {
+  const [file] = ui.importFile.files;
+  if (!file) return;
+  try {
+    const imported = parseGarden(await file.text());
+    if (!window.confirm(`Importar ${imported.length} planta(s) e substituir o jardim atual?`)) {
+      return;
+    }
+    ui.statusFilter.value = "all";
+    ui.environmentFilter.value = "all";
+    if (commit(imported)) {
+      showNotice(`Jardim importado: ${imported.length} planta(s) restaurada(s).`);
+    }
+  } catch (error) {
+    console.error("Não foi possível importar o jardim.", error);
+    showNotice(error.message || "Não foi possível importar o arquivo.");
+  } finally {
+    ui.importFile.value = "";
+  }
+});
+
 try {
   plants = loadPlants();
+  setControlsEnabled(true);
   render();
 } catch (error) {
   console.error("Não foi possível carregar as plantas salvas.", error);
-  ui.notice.textContent = error.message || "Não foi possível carregar os dados salvos.";
-  ui.notice.hidden = false;
-  ui.add.disabled = true;
-  ui.statusFilter.disabled = true;
-  ui.environmentFilter.disabled = true;
+  showNotice(error.message || "Não foi possível carregar os dados salvos.");
+  setControlsEnabled(false);
 }

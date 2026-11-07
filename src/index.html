@@ -32,20 +32,27 @@
       <section class="garden" aria-labelledby="garden-title">
         <div class="section-heading">
           <div><p class="eyebrow">VISÃO GERAL</p><h2 id="garden-title">Minhas plantas</h2></div>
-          <div class="filters">
-            <label><span class="visually-hidden">Filtrar por status</span><select id="status-filter">
-              <option value="all">Todos os status</option><option value="thirsty">Precisam de rega</option><option value="hydrated">Hidratadas</option>
-            </select></label>
-            <label><span class="visually-hidden">Filtrar por ambiente</span><select id="environment-filter">
-              <option value="all">Todos os ambientes</option><option value="Sol Pleno">Sol pleno</option><option value="Meia-Sombra">Meia-sombra</option><option value="Sombra">Sombra</option>
-            </select></label>
+          <div class="garden-tools">
+            <div class="filters">
+              <label><span class="visually-hidden">Filtrar por status</span><select id="status-filter">
+                <option value="all">Todos os status</option><option value="thirsty">Precisam de rega</option><option value="hydrated">Hidratadas</option>
+              </select></label>
+              <label><span class="visually-hidden">Filtrar por ambiente</span><select id="environment-filter">
+                <option value="all">Todos os ambientes</option><option value="Sol Pleno">Sol pleno</option><option value="Meia-Sombra">Meia-sombra</option><option value="Sombra">Sombra</option>
+              </select></label>
+            </div>
+            <div class="data-actions">
+              <button class="button secondary" id="export-garden" type="button">Exportar JSON</button>
+              <button class="button secondary" id="import-garden" type="button">Importar JSON</button>
+              <input id="import-file" type="file" accept="application/json,.json" hidden>
+            </div>
           </div>
         </div>
         <p id="notice" class="notice" role="status" hidden></p>
         <div id="plant-list" class="plant-grid" aria-live="polite"></div>
       </section>
 
-      <footer>☘ Feito com carinho para quem cultiva.</footer>
+      <footer>☘ Feito com carinho para quem cultiva. · FloraCare v1.0.0</footer>
     </main>
 
     <dialog id="plant-dialog" aria-labelledby="dialog-title">

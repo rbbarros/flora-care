@@ -1,24 +1,46 @@
-import { addDays, todayISO } from "./date-utils.js";
+import { addDays, isISODate, todayISO } from "./date-utils.js";
 
-const STORAGE_KEY = "floracare.plants.v1";
-const ENVIRONMENTS = new Set(["Sol Pleno", "Meia-Sombra", "Sombra"]);
+export const STORAGE_KEY = "floracare.plants.v1";
+export const GARDEN_SCHEMA = "floracare.garden";
+export const GARDEN_VERSION = 1;
+export const ENVIRONMENTS = Object.freeze(["Sol Pleno", "Meia-Sombra", "Sombra"]);
 
-function isValidPlant(plant) {
+const ENVIRONMENT_SET = new Set(ENVIRONMENTS);
+
+function requireStorage(storage) {
+  const target = storage ?? globalThis.localStorage;
+  if (!target) {
+    throw new Error("Armazenamento local indisponível neste ambiente.");
+  }
+  return target;
+}
+
+export function isValidPlant(plant) {
   return Boolean(
     plant &&
-    typeof plant.id === "string" &&
+    typeof plant.id === "string" && plant.id.length > 0 &&
     typeof plant.name === "string" && plant.name.trim().length >= 2 &&
     typeof plant.species === "string" &&
-    ENVIRONMENTS.has(plant.environment) &&
+    ENVIRONMENT_SET.has(plant.environment) &&
     Number.isInteger(plant.intervalDays) && plant.intervalDays > 0 &&
-    typeof plant.lastWateredAt === "string" && /^\d{4}-\d{2}-\d{2}$/.test(plant.lastWateredAt) &&
+    isISODate(plant.lastWateredAt) &&
     Array.isArray(plant.wateringHistory) &&
-    plant.wateringHistory.every((date) => typeof date === "string")
+    plant.wateringHistory.every(isISODate)
   );
 }
 
-export function loadPlants() {
-  const raw = localStorage.getItem(STORAGE_KEY);
+export function validatePlantInput({ name, intervalDays } = {}) {
+  if (typeof name !== "string" || name.trim().length < 2) {
+    return "Informe um nome com pelo menos 2 caracteres.";
+  }
+  if (!Number.isInteger(intervalDays) || intervalDays < 1) {
+    return "O intervalo de rega deve ser um número inteiro de pelo menos 1 dia.";
+  }
+  return null;
+}
+
+export function loadPlants(storage) {
+  const raw = requireStorage(storage).getItem(STORAGE_KEY);
   if (raw === null) return [];
 
   let plants;
@@ -33,16 +55,27 @@ export function loadPlants() {
   return plants;
 }
 
-export function savePlants(plants) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(plants));
+export function savePlants(plants, storage) {
+  if (!Array.isArray(plants) || !plants.every(isValidPlant)) {
+    throw new Error("Não é possível salvar um jardim com dados inválidos.");
+  }
+  requireStorage(storage).setItem(STORAGE_KEY, JSON.stringify(plants));
 }
 
-export function createPlant({ name, species, environment, intervalDays, needsWater }) {
-  const today = todayISO();
+export function createPlant(
+  { name, species = "", environment, intervalDays, needsWater = false },
+  today = todayISO()
+) {
+  const error = validatePlantInput({ name, intervalDays });
+  if (error) throw new Error(error);
+  if (!ENVIRONMENT_SET.has(environment)) {
+    throw new Error("Ambiente inválido. Use Sol Pleno, Meia-Sombra ou Sombra.");
+  }
+
   return {
     id: crypto.randomUUID(),
     name: name.trim(),
-    species: species.trim(),
+    species: typeof species === "string" ? species.trim() : "",
     environment,
     intervalDays,
     lastWateredAt: needsWater ? addDays(today, -intervalDays) : today,
@@ -50,12 +83,32 @@ export function createPlant({ name, species, environment, intervalDays, needsWat
   };
 }
 
-export function waterPlant(plant) {
-  const today = todayISO();
+export function updatePlant(plant, values) {
+  const next = { ...plant, ...values };
+  const error = validatePlantInput({ name: next.name, intervalDays: next.intervalDays });
+  if (error) throw new Error(error);
+  if (!ENVIRONMENT_SET.has(next.environment)) {
+    throw new Error("Ambiente inválido. Use Sol Pleno, Meia-Sombra ou Sombra.");
+  }
+  return {
+    ...next,
+    name: next.name.trim(),
+    species: typeof next.species === "string" ? next.species.trim() : "",
+  };
+}
+
+export function removePlant(plants, id) {
+  return plants.filter((plant) => plant.id !== id);
+}
+
+export function waterPlant(plant, today = todayISO()) {
+  const alreadyRegisteredToday = plant.wateringHistory.at(-1) === today;
   return {
     ...plant,
     lastWateredAt: today,
-    wateringHistory: [...plant.wateringHistory, today],
+    wateringHistory: alreadyRegisteredToday
+      ? plant.wateringHistory
+      : [...plant.wateringHistory, today],
   };
 }
 
@@ -65,4 +118,56 @@ export function nextWateringDate(plant) {
 
 export function wateringStatus(plant, today = todayISO()) {
   return today >= nextWateringDate(plant) ? "thirsty" : "hydrated";
+}
+
+export function filterPlants(plants, { status = "all", environment = "all" } = {}, today = todayISO()) {
+  return plants.filter((plant) => {
+    const byStatus = status === "all" || wateringStatus(plant, today) === status;
+    const byEnvironment = environment === "all" || plant.environment === environment;
+    return byStatus && byEnvironment;
+  });
+}
+
+export function summarizeGarden(plants, today = todayISO()) {
+  const thirsty = plants.filter((plant) => wateringStatus(plant, today) === "thirsty").length;
+  return {
+    total: plants.length,
+    thirsty,
+    hydrated: plants.length - thirsty,
+  };
+}
+
+export function exportGarden(plants, exportedAt = new Date().toISOString()) {
+  if (!Array.isArray(plants) || !plants.every(isValidPlant)) {
+    throw new Error("Não é possível exportar um jardim com dados inválidos.");
+  }
+  return JSON.stringify({
+    schema: GARDEN_SCHEMA,
+    version: GARDEN_VERSION,
+    exportedAt,
+    plants,
+  }, null, 2);
+}
+
+export function parseGarden(raw) {
+  let data;
+  try {
+    data = JSON.parse(raw);
+  } catch (error) {
+    throw new Error("O arquivo não contém JSON válido.", { cause: error });
+  }
+
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
+    throw new Error("Formato de arquivo não reconhecido. Selecione um arquivo exportado pelo FloraCare.");
+  }
+  if (data.schema !== GARDEN_SCHEMA) {
+    throw new Error("O arquivo não é uma exportação do FloraCare.");
+  }
+  if (data.version !== GARDEN_VERSION) {
+    throw new Error(`Versão de arquivo não suportada: ${data.version}.`);
+  }
+  if (!Array.isArray(data.plants) || !data.plants.every(isValidPlant)) {
+    throw new Error("O arquivo contém plantas inválidas. Nenhum dado foi alterado.");
+  }
+  return data.plants;
 }

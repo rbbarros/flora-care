@@ -41,7 +41,10 @@ h2 { margin-bottom: 0; font-size: 22px; }
 .garden { margin-top: 42px; }
 .section-heading { align-items: end; margin-bottom: 16px; }
 .section-heading .eyebrow { margin-bottom: 5px; }
+.garden-tools { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
 .filters { display: flex; gap: 9px; }
+.data-actions { display: flex; gap: 8px; }
+.data-actions .button { min-height: 38px; padding: 0 12px; }
 select, .field input { min-height: 40px; padding: 0 10px; border: 1px solid #e1e6de; border-radius: 7px; background: #fff; color: #35443a; font-size: 12px; }
 .filters select { min-width: 155px; }
 .notice { padding: 11px 13px; border: 1px solid #f0d7b4; border-radius: 8px; background: #fff5e7; color: #86551f; font-size: 13px; }
@@ -97,9 +100,12 @@ dialog::backdrop { background: #18251c66; }
   .summary-card strong { font-size: 14px; }
   .summary-icon { width: 33px; height: 33px; }
   .section-heading { align-items: start; flex-direction: column; }
+  .garden-tools { width: 100%; }
   .filters { width: 100%; }
   .filters label { flex: 1; min-width: 0; }
   .filters select { width: 100%; min-width: 0; padding: 0 5px; font-size: 10px; }
+  .data-actions { width: 100%; }
+  .data-actions .button { flex: 1; }
   .plant-grid { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }

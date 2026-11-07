@@ -2,21 +2,74 @@
 
 on:
   push:
-    branches: [ "main", "develop" ]
+    branches:
+      - "main"
+      - "develop"
+      - "feat/**"
+      - "bugfix/**"
+      - "docs/**"
+      - "release/**"
+      - "hotfix/**"
   pull_request:
     branches: [ "main", "develop" ]
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
-  validate:
+  quality:
+    name: Lint, build e testes
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - name: Validar Documentacao Obrigatoria
-        run: |
-          test -f docs/project-charter.md
-          test -f docs/requisitos.md
-          test -f docs/casos-de-uso.md
-          test -f docs/user-stories.md
-          test -f docs/arquitetura.md
-          test -f docs/matriz-rastreabilidade.md
-          test -f README.md
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Verificação estática
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Testes automatizados
+        run: npm test
+
+      - name: Cobertura de testes
+        run: npm run test:coverage
+
+  security:
+    name: Segurança e dependências
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Auditoria de dependências
+        run: npm audit --audit-level=high
+
+      - name: Varredura de segredos (gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

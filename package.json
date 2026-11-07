@@ -1,0 +1,18 @@
+{
+  "name": "floracare",
+  "version": "1.0.0",
+  "description": "Gerenciador local de cuidados e rega de plantas domésticas.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "test:coverage": "node --experimental-test-coverage --test",
+    "lint": "node scripts/check.mjs",
+    "build": "node scripts/build.mjs",
+    "check": "npm run lint && npm run build && npm test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}

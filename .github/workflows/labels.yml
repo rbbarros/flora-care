@@ -1,0 +1,24 @@
+name: Sincronizar labels
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  labels:
+    name: Aplicar conjunto padrão de labels
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Sincronizar labels
+        uses: EndBug/label-sync@v2
+        with:
+          config-file: .github/labels.yml
+          delete-other-labels: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

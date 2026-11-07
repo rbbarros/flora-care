@@ -16,7 +16,17 @@ __pycache__/
 *.log
 *.tmp
 
-# Operating system files
+# Operating system and IDE files
 .DS_Store
 Thumbs.db
 Desktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo
+*.local
+
+# Documents
+AVALIACAO_TECNICA_flora-care_2026_2.pdf
+EspecificaçãoCHICOUT.pdf
+*.pdf

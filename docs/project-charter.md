@@ -1,8 +1,10 @@
 # Project Charter (Termo de Abertura do Projeto)
 
 **Nome do Projeto:** FloraCare — Gerenciador de Cuidados e Rega de Plantas  
-**Versão do Documento:** 1.0  
+**Versão do Documento:** 1.1  
 **Status:** Aprovado para Desenvolvimento  
+**Repositório:** https://github.com/rbbarros/flora-care  
+**Backlog:** https://github.com/rbbarros/flora-care/issues
 
 ---
 
@@ -16,10 +18,10 @@ O **FloraCare** resolve essa dor oferecendo um painel direto onde, com apenas um
 
 ## 3. Objetivos SMART
 * **Específico (Specific):** Desenvolver um MVP capaz de gerenciar o ciclo de vida dos dados (CRUD) de plantas domésticas, registrar eventos de rega e calcular automaticamente o status hídrico ("Hidratada" vs. "Precisa de Rega").
-* **Mensurável (Measurable):** Implementar 100% dos 7 Requisitos Funcionais (RFs) e 5 Requisitos Não Funcionais (RNFs) especificados, rastreados através da resolução de 15 Issues no GitHub.
+* **Mensurável (Measurable):** Implementar 100% dos 8 Requisitos Funcionais (RFs) e 7 Requisitos Não Funcionais (RNFs) especificados, com 46 testes automatizados, pipeline de CI verde e rastreabilidade nas 15 Issues do GitHub.
 * **Atingível (Achievable):** Adotar arquitetura enxuta com persistência de dados local (`LocalStorage`, arquivo `JSON` ou `SQLite`), viabilizando a entrega completa por um único desenvolvedor.
 * **Relevante (Relevant):** Exercitar boas práticas de especificação formal, Git Flow, Commits Atômicos (Conventional Commits) e Versionamento Semântico (SemVer).
-* **Temporal (Time-bound):** Concluir toda a documentação, implementação e publicação da release `v1.0.0` dentro do prazo de 1 semana.
+* **Temporal (Time-bound):** Concluir toda a documentação, implementação, testes e publicação da release `v1.0.0` dentro do prazo de 1 semana, mantendo a evolução da Week_02 na branch `feat/adjust-report`.
 
 ## 4. Escopo Preliminar
 
@@ -32,6 +34,8 @@ O **FloraCare** resolve essa dor oferecendo um painel direto onde, com apenas um
 * Exclusão de plantas do catálogo pessoal.
 * Filtro de plantas por status ("Todas", "Precisam de Rega Hoje") e por ambiente de luz.
 * Persistência de dados local.
+* Exportação e importação do jardim em JSON versionado, com validação do arquivo.
+* Testes automatizados de domínio, build reproduzível e pipeline de CI.
 
 ### ❌ Fora do Escopo (Out-of-Scope para esta semana)
 * Identificação automática de espécies de plantas por foto/Inteligência Artificial.
@@ -50,3 +54,12 @@ O **FloraCare** resolve essa dor oferecendo um painel direto onde, com apenas um
 
 ### Público-Alvo
 * Moradores de apartamentos, estudantes e entusiastas de jardinagem doméstica (*Urban Jungle*) que possuem entre 3 e 50 plantas em casa e desejam uma ferramenta simples e rápida para não esquecer o dia correto de regar cada espécie.
+
+## 6. Critérios de Sucesso
+
+* 100% dos RF01–RF08 e RNF01–RNF07 implementados ou verificados.
+* Matriz de rastreabilidade completa ligando requisito, caso de uso, história, issue, código e teste.
+* `npm run check` (lint + build + testes) verde localmente e no GitHub Actions.
+* Nenhum segredo versionado; `gitleaks` e `npm audit` verdes no CI.
+* README, arquitetura, requisitos, casos de uso, histórias, changelog e guia de contribuição sincronizados.
+* Issues #1–#13 evidenciadas por código/testes; #14 e #15 já concluídas no histórico.
