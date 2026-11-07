@@ -1,22 +1,24 @@
-# FloraCare — Especificação de um Gerenciador de Cuidados e Rega de Plantas
+# FloraCare — Gerenciador de Cuidados e Rega de Plantas
 
 ![Versão](https://img.shields.io/badge/vers%C3%A3o-0.1.0-blue)
-![Fase](https://img.shields.io/badge/fase-especifica%C3%A7%C3%A3o-blue)
+![Status](https://img.shields.io/badge/status-MVP%20local-brightgreen)
 
-O **FloraCare** é a especificação de um sistema simples para organizar plantas domésticas e acompanhar quando precisam ser regadas. Este repositório está na etapa de planejamento e documentação: os requisitos e os comportamentos esperados estão descritos em `docs/`, e a pasta `src/` está reservada para o código-fonte, ainda não implementado.
+O **FloraCare** é uma aplicação web simples para organizar plantas domésticas e acompanhar quando precisam ser regadas. O usuário cadastra cada planta, informa seu ambiente e intervalo de rega e consulta a próxima data de cuidado. Os dados são armazenados localmente no navegador.
 
-## Funcionalidades especificadas
+## Funcionalidades
 
 | Requisito | Funcionalidade | Situação |
 |---|---|---|
-| [RF01] | Cadastrar planta e seus parâmetros de cuidado | Especificado; implementação pendente |
-| [RF02] | Listar plantas com datas e status hídrico | Especificado; implementação pendente |
-| [RF03] | Editar os dados de uma planta | Especificado; implementação pendente |
-| [RF04] | Excluir planta com confirmação | Especificado; implementação pendente |
-| [RF05] | Registrar uma rega e manter seu histórico | Especificado; implementação pendente |
-| [RF06] | Calcular a próxima rega e o status | Especificado; implementação pendente |
-| [RF07] | Filtrar por status e ambiente | Especificado; implementação pendente |
+| [RF01] | Cadastrar planta e seus parâmetros de cuidado | Implementado |
+| [RF02] | Listar plantas com datas e status hídrico | Implementado |
+| [RF03] | Editar os dados de uma planta | Implementado |
+| [RF04] | Excluir planta com confirmação | Implementado |
+| [RF05] | Registrar uma rega e manter seu histórico | Implementado |
+| [RF06] | Calcular a próxima rega e o status | Implementado |
+| [RF07] | Filtrar por status e ambiente | Implementado |
 | Futuro | Calendário de adubação e poda | Planejado |
+
+Os dados ficam neste navegador e perfil. Limpar os dados do site remove o jardim salvo; o MVP não sincroniza informações entre dispositivos.
 
 ## Estrutura do repositório
 
@@ -30,7 +32,12 @@ flora-care/
 │   ├── casos-de-uso.md
 │   └── user-stories.md
 └── src/
-    └── .gitkeep
+    ├── index.html
+    ├── styles.css
+    └── js/
+        ├── app.js
+        ├── date-utils.js
+        └── plant-service.js
 ```
 
 ## Documentação do projeto
@@ -48,11 +55,27 @@ Os artefatos estão separados por finalidade:
 - [casos-de-uso.md](./docs/casos-de-uso.md) descreve atores e fluxos de interação, inclusive alternativas e exceções.
 - [user-stories.md](./docs/user-stories.md) expressa as necessidades do usuário e seus critérios de aceite.
 
-As histórias e os casos de uso complementam os requisitos; não são código-fonte. A implementação correspondente será adicionada a `src/` posteriormente.
+Os requisitos descrevem o que o sistema deve fazer; os casos de uso detalham as interações e as histórias registram as necessidades e critérios de aceite.
 
-## Execução
+## Executar localmente
 
-Ainda não há uma aplicação executável. `src/` está intencionalmente sem código-fonte; `.gitkeep` existe somente para que o Git preserve a pasta no repositório.
+É necessário ter Python 3 e um navegador moderno. Na pasta raiz do repositório, inicie um servidor local:
+
+**Windows (PowerShell):**
+
+```powershell
+python -m http.server 8000 --directory src
+```
+
+Se `python` não estiver disponível, use `py -m http.server 8000 --directory src`.
+
+**macOS/Linux:**
+
+```bash
+python3 -m http.server 8000 --directory src
+```
+
+Abra `http://localhost:8000` no navegador. Encerre o servidor com `Ctrl+C`. Não é necessário instalar dependências.
 
 ## Fluxo de branches
 
