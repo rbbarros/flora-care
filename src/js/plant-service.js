@@ -1,6 +1,6 @@
 import { addDays, isISODate, todayISO } from "./date-utils.js";
 
-export const STORAGE_KEY = "floracare.plants.v1";
+export const STORAGE_KEY = "floracare.plants.v1"; // gitleaks:allow (chave do localStorage, não é segredo)
 export const GARDEN_SCHEMA = "floracare.garden";
 export const GARDEN_VERSION = 1;
 export const ENVIRONMENTS = Object.freeze(["Sol Pleno", "Meia-Sombra", "Sombra"]);

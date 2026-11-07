@@ -1,0 +1,4 @@
+# Falso positivo (generic-api-key): STORAGE_KEY é o nome da chave do localStorage,
+# não uma credencial. O commit 6cc8173 introduziu a linha sem o comentário
+# `gitleaks:allow`, então a varredura do PR (intervalo de commits) ainda o reporta.
+6cc8173273686ad4a217afed6aaa46d97e354e10:src/js/plant-service.js:generic-api-key:3

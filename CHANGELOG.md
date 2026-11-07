@@ -18,7 +18,15 @@ O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e o 
 - `docs/backlog.md` com as issues reais do GitHub e as lacunas do relatório.
 - Histórias US06 (listar), US07 (filtrar) e US08 (exportar/importar), caso de uso UC04 e requisitos RF08, RNF06 e RNF07.
 
+### Fixed
+
+- Falso positivo do `gitleaks` (`generic-api-key`) em `STORAGE_KEY` de `src/js/plant-service.js`: a linha recebeu `gitleaks:allow` e o achado do commit `6cc8173` foi registrado em `.gitleaksignore`.
+- Job `security` do CI sem permissão para comentar no PR (`Resource not accessible by integration`): agora usa `pull-requests: write`.
+- CI não rodava no push de branches `feature/**`, o padrão documentado no `README.md` e no `CONTRIBUTING.md`.
+
 ### Changed
+
+- CI e `engines` migrados para Node.js 22 (o Node.js 20 saiu de suporte em abril de 2026).
 
 - Matriz de rastreabilidade reescrita com RF01–RF08, RNF01–RNF07, UC01–UC04, US01–US08, issues reais do GitHub, implementação e testes.
 - `docs/arquitetura.md` ampliado com diagramas, fluxo de dados, modelo, ADRs, testabilidade, segurança e evolução.

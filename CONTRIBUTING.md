@@ -4,7 +4,7 @@ Obrigado por contribuir! Este guia descreve o fluxo de trabalho, o padrão de co
 
 ## 1. Pré-requisitos
 
-- Node.js 20 ou superior.
+- Node.js 22 ou superior.
 - Git.
 - Navegador moderno para testes manuais.
 
