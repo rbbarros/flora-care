@@ -47,6 +47,7 @@ O workflow está em [.github/workflows/ci.yml](./.github/workflows/ci.yml) e rod
 flora-care/
 ├── .editorconfig
 ├── .gitattributes
+├── .gitleaksignore
 ├── .github/
 │   ├── workflows/
 │   │   ├── ci.yml

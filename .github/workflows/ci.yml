@@ -1,10 +1,11 @@
-﻿name: FloraCare CI
+name: FloraCare CI
 
 on:
   push:
     branches:
       - "main"
       - "develop"
+      - "feature/**"
       - "feat/**"
       - "bugfix/**"
       - "docs/**"
@@ -29,7 +30,7 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Instalar dependências
@@ -50,6 +51,11 @@ jobs:
   security:
     name: Segurança e dependências
     runs-on: ubuntu-latest
+    # O gitleaks-action comenta os achados no PR; com `read` a chamada falha
+    # com "Resource not accessible by integration".
+    permissions:
+      contents: read
+      pull-requests: write
     timeout-minutes: 10
     steps:
       - name: Checkout
@@ -60,7 +66,7 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Instalar dependências
