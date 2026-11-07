@@ -1,0 +1,22 @@
+﻿name: FloraCare CI
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validar Documentacao Obrigatoria
+        run: |
+          test -f docs/project-charter.md
+          test -f docs/requisitos.md
+          test -f docs/casos-de-uso.md
+          test -f docs/user-stories.md
+          test -f docs/arquitetura.md
+          test -f docs/matriz-rastreabilidade.md
+          test -f README.md
