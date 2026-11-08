@@ -1,7 +1,7 @@
 # FloraCare — Gerenciador de Cuidados e Rega de Plantas
 
 ![Versão](https://img.shields.io/badge/vers%C3%A3o-1.0.0-blue)
-![CI](https://github.com/rbbarros/flora-care/actions/workflows/ci.yml/badge.svg?branch=develop)
+![CI](https://github.com/rbbarros/flora-care/actions/workflows/ci.yml/badge.svg?branch=main)
 ![Testes](https://img.shields.io/badge/testes-46%20automatizados-brightgreen)
 ![Licença](https://img.shields.io/badge/licen%C3%A7a-MIT-green)
 
@@ -23,7 +23,7 @@ O **FloraCare** é uma aplicação web simples para organizar plantas doméstica
 
 Os dados ficam neste navegador e perfil. Limpar os dados do site remove o jardim salvo; use **Exportar JSON** para fazer backup e **Importar JSON** para restaurar em outro navegador.
 
-> A versão publicada é `v1.0.0`. As melhorias da Week_02 (testes, CI, exportação/importação e documentação) estão na branch `feat/adjust-report`, serão integradas em `develop` e estão registradas em [CHANGELOG — Unreleased](./CHANGELOG.md).
+> A versão publicada é `v1.0.0`. As melhorias da Week_02 (testes, CI, exportação/importação e documentação) já estão integradas à `main` e registradas em [CHANGELOG — Unreleased](./CHANGELOG.md).
 
 ## Qualidade e testes
 
@@ -135,41 +135,9 @@ python3 -m http.server 8000 --directory src
 
 Abra `http://localhost:8000` no navegador. Encerre o servidor com `Ctrl+C`. Não é necessário instalar dependências para executar a aplicação; o Node.js é usado apenas para testes, lint e build.
 
-## Fluxo de branches
+## Autoria
 
-O trabalho segue o Git Flow solicitado na atividade. Não faça commits diretamente em `main`: implemente em branches temáticas e integre por Pull Request.
-
-| Tipo de trabalho | Criar a partir de | Integrar em |
-|---|---|---|
-| Funcionalidade ou documentação (`feature/issue-<n>-descricao`) | `develop` | `develop` |
-| Correção (`bugfix/issue-<n>-descricao`) | `develop` | `develop` |
-| Preparação de versão (`release/<versao>`) | `develop` | `main` e `develop` |
-| Correção urgente (`hotfix/issue-<n>-descricao`) | `main` | `main` e `develop` |
-
-Exemplo para trabalhar em uma Issue:
-
-```bash
-git switch develop
-git pull origin develop
-git switch -c feature/issue-16-notificacao-rega
-# Faça alterações e commits pequenos, por exemplo:
-git add .
-git commit -m "feat: adicionar notificacao de rega"
-git push -u origin feature/issue-16-notificacao-rega
-```
-
-Abra um Pull Request da branch temática para `develop`, inclua `Closes #N` na descrição e use Conventional Commits (`feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`). Para marcar uma versão estável após integrá-la em `main`, use uma tag anotada seguindo SemVer:
-
-```bash
-git tag -a v1.0.0 -m "Primeira versão do MVP"
-git push origin v1.0.0
-```
-
-## Issues e governança no GitHub
-
-O backlog real está em [rbbarros/flora-care/issues](https://github.com/rbbarros/flora-care/issues). As issues #1–#13 cobrem estrutura, documentação, persistência, CRUD, cálculo, rega e filtros; #14 e #15 já estão fechadas. O mapeamento completo, incluindo as lacunas do relatório técnico que ainda não têm issue própria, está em [docs/backlog.md](./docs/backlog.md).
-
-Ações que exigem escrita no GitHub (criar/fechar issues, abrir Pull Requests, aplicar labels e publicar tags) não são executadas automaticamente pelo projeto local.
+O FloraCare foi idealizado e é mantido por **Raquel Rbb (Raquel Barros)** — [@rbbarros](https://github.com/rbbarros), owner do projeto.
 
 ## Licença
 
